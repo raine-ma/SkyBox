@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Profile | Skybox</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='other.css') }}">
+  </head>
+  <body>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-warning alert-dismissible show" role="alert">
+            {{message}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <h1>{{ user.username }}'s Profile</h1><br>
+    <p>Username: {{ user.username }}</p><br>
+    <p>Email: {{ user.email }}</p><br>
+    <p>Upload a file <a href="/upload">here</a></p><br>
+    <a href="/logout">Logout</a>
+    <hr>
+    <h4>Your Files:</h4>
+    <p style='text-align: right; font-size: 20px;'>Search: <input type='text' style='border: 1px solid black;' value='{{search}}' id='query'><input onclick="search()" type='submit' value='Go' id='searchbutton'><br><p style='font-size: 14px !important; text-align: right;'>Tip: use _ to represent any character in your search query or % for any number of any character</p></p>
+    <label>Sort by: </label>
+    {% if order=="o-n": %}
+      <input onclick="noorder()" type='submit' action='/profile' value='Newest -> oldest' class="btn">
+      <input onclick="onorder()" type='submit' action='/profile?order=o-n' value='Oldest -> newest' class="btn selected">
+    {% elif order=="n-o" %}
+      <input onclick="noorder()" type='submit' action='/profile' value='Newest -> oldest' class="btn selected">
+      <input onclick="onorder()" type='submit' action='/profile?order=o-n' value='Oldest -> newest' class="btn">
+    {% endif %}
+    {% if star == True: %}
+      <input type='submit' onclick='starred(false)' action='/profile?starred=False' tite="view starred files" class='btn selected' value='Starred'>
+    {% else: %}
+      <input type='submit' onclick='starred(true)' action='/profile?starred=True' tite="view starred files" class='btn' value='Starred'>
+    {% endif %}
+    <p>Tags: </p>
+    {% for y in tags %}
+      <button onclick="querytag('{{y}}')">{{y}}</button>
+    {% endfor %}
+    <button onclick'createtag()'>Create new</button>
+    {% if files != empty: %}
+      {% for x in range(length): %}
+        {% if x%2 == 0: %}
+          <div class='alternate filerow'>
+            <p>
+              <a href="{{ '/file/' + files[x][5] }}" class="filename">{{ files[x][1] }}</a>
+            </p>
+            <div id='tags'>
+            {% for y in files[x][7].split(':')[:-1]: %}
+              <p style="background-color: white;">{{y}}</p><br><button onclick='removetag("{{y}}","{{files[x][5]}}")'>X</button>
+            {% endfor %}
+            </div>
+            {% for tag in tags %}
+              <button onclick='addtag("{{tag}}","{{files[x][5]}}")'>{{tag}}</button>
+            {% endfor %}
+            <button onclick='newtag("{{files[x][5]}}")'>Create new</button>
+            <p style="text-align: right;" class="fileinfo">
+              {{ sizes[x] + " | Uploaded: " + files[x][4] + " | " }}
+              {% if not(files[x][0] == '2'): %}
+                {% if files[x][0] == '0': %}
+                  PUBLIC<button onclick='changeperm("{{ files[x][5] }}")' title="Change permission" class="littlebuttonthing"> <i class="fa fa-solid fa-pencil"></i></button>
+                {% else: %}
+                  PRIVATE<button onclick='changeperm("{{ files[x][5] }}")' title="Change permission" class="littlebuttonthing"> <i class="fa fa-solid fa-pencil"></i></button>
+                {% endif %}
+              {% else: %}
+                ENCRYPTED
+              {% endif %}
+              {{ " | " }} 
+              {% if previewable[x] == True: %}
+                <a href='/preview/{{files[x][5]}}' target="_blank" title="Preview file"><i class="fa fa-magnifying-glass"></i></a>
+                {{ " | " }} 
+              {% endif %}
+              {% if files[x][6] == '1': %}
+                <button onclick='favorite("{{files[x][5]}}")' title="Unfavorite this file" class="littlebuttonthing"><i class="fa fa-regular fa-star fa-solid" style='color: #F4D35E;'></i></button>
+              {% else: %}
+                <button onclick='favorite("{{files[x][5]}}")' title="Favorite this file" class="littlebuttonthing"><i class="fa fa-regular fa-star"></i></button>
+              {% endif %}
+              {{ " | " }} 
+              <a href='/download/{{files[x][5]}}' target="_blank" title="Download file"><i class="fa fa-file-arrow-down"></i></a>
+              {{ " | " }} 
+              <button onclick='deletefile("{{files[x][5]}}")' class="littlebuttonthing" title="Delete file"><i class="fa fa-light fa-trash"></i></button>
+            </p>
+          </div>
+        {% else: %}
+          <div class=filerow>
+            <p>
+              <a href="{{ '/file/' + files[x][5] }}" class="filename">{{ files[x][1] }}</a>
+            </p>
+            <div id='tags'>
+            {% for y in files[x][7].split(':')[:-1]: %}
+              <p style="background-color: white;">{{y}}</p><button onclick='removetag("{{y}}","{{files[x][5]}}")'>X</button>
+            {% endfor %}
+            </div>
+            {% for tag in tags %}
+              <button onclick='addtag("{{tag}}","{{files[x][5]}}")'>{{tag}}</button>
+            {% endfor %}
+            <button onclick='newtag("{{files[x][5]}}")'>Create new</button>
+            <p style="text-align: right;" class="fileinfo">
+              {{ sizes[x] + " | Uploaded: " + files[x][4] + " | " }}
+              {% if not(files[x][0] == '2'): %}
+                {% if files[x][0] == '0': %}
+                  PUBLIC<button onclick='changeperm("{{ files[x][5] }}")' title="Change permission" class="littlebuttonthing"> <i class="fa fa-solid fa-pencil"></i></button>
+                {% else: %}
+                  PRIVATE<button onclick='changeperm("{{ files[x][5] }}")' title="Change permission" class="littlebuttonthing"> <i class="fa fa-solid fa-pencil"></i></button>
+                {% endif %}
+              {% else: %}
+                ENCRYPTED
+              {% endif %}
+              {{ " | " }} 
+              {% if previewable[x] == True: %}
+                <a href='/preview/{{files[x][5]}}' target="_blank" title="Preview file"><i class="fa fa-magnifying-glass"></i></a>
+                {{ " | " }} 
+              {% endif %}
+              {% if files[x][6] == '1': %}
+                <button onclick='favorite("{{files[x][5]}}")' title="Unfavorite this file" class="littlebuttonthing"><i class="fa fa-regular fa-star fa-solid" style='color: #F4D35E;'></i></button>
+              {% else: %}
+                <button onclick='favorite("{{files[x][5]}}")' title="Favorite this file" class="littlebuttonthing"><i class="fa fa-regular fa-star"></i></button>
+              {% endif %}
+              {{ " | " }} 
+              <a href='/download/{{files[x][5]}}' target="_blank" title="Download file"><i class="fa fa-file-arrow-down"></i></a>
+              {{ " | " }} 
+              <button onclick='deletefile("{{files[x][5]}}")' class="littlebuttonthing" title="Delete file"><i class="fa fa-light fa-trash"></i></button>
+            </p>
+          </div>
+        {% endif %}
+      {% endfor %}
+      <div class="pagination">
+          <p>Displaying files {{(page - 1) * per_page + 1}} - {{last_file}} out of {{total_files}}</p>
+          {% if page > 1 %}
+              <a href="javascript:pagination('per-page={{ per_page }}&page=1')" >&laquo; First</a>
+              <a href="javascript:pagination('per-page={{ per_page }}&page={{ page - 1 }}')">&lsaquo; Previous</a>
+          {% endif %}
+      
+          {% for p in range(1, total_pages + 1) %}
+              {% if p == page %}
+                  <strong class="current-page">{{ p }}</strong>
+              {% else %}
+                  <a href="javascript:pagination('per-page={{ per_page }}&page={{ p }}')">{{ p }}</a>
+              {% endif %}
+          {% endfor %}
+      
+          {% if page < total_pages %}
+              <a href="javascript:pagination('/profile?per-page={{ per_page }}&page={{ page + 1 }}')">Next &rsaquo;</a>
+              <a href="javascript:pagination('/profile?per-page={{ per_page }}&page={{ total_pages }}')">Last &raquo;</a>
+          {% endif %}
+      </div>
+    {% elif search=='' and star==False: %}
+      <p>No files yet</p>
+    {% else %}
+      <p>No files no files found with your criteria</p>
+    {% endif %}
+    <script>
+      var input = document.getElementById("query");
+      
+      // Execute a function when the user presses a key on the keyboard
+      input.addEventListener("keypress", function(event) {
+        // If the user presses the "Enter" key on the keyboard
+        if (event.key === "Enter") {
+          // Cancel the default action, if needed
+          event.preventDefault();
+          // Trigger the button element with a click
+          document.getElementById("searchbutton").click();
+        }
+      });
+      var shiftpressed = false
+      document.addEventListener('keydown', onKeyHandler);
+      document.addEventListener('keyup', afterKeyHandler);
+      function onKeyHandler(e) {
+        if (e.keyCode === 16) {
+          shiftpressed = true;
+        }
+      }
+      function afterKeyHandler(e) {
+        if (e.keyCode === 16) {
+          shiftpressed = false;
+        }
+      }
+      function deletefile(fileid) {
+        if (shiftpressed === true) {
+          const Http = new XMLHttpRequest();
+          const url='https://skybox.mea-team.repl.co/delete/'+fileid+"?supressmessage=True";
+          Http.open("POST", url);
+          Http.send();
+          setTimeout('location.reload();', 500);
+        } else {
+          window.location.href = "https://skybox.mea-team.repl.co/delete/"+fileid;
+        }
+      }
+      function changeperm(fileid) {
+        const Http = new XMLHttpRequest();
+        const url='https://skybox.mea-team.repl.co/change-perm/'+fileid;
+        Http.open("POST", url);
+        Http.send();
+        setTimeout('location.reload();', 500);
+      }
+      function favorite(fileid) {
+        const Http = new XMLHttpRequest();
+        const url='https://skybox.mea-team.repl.co/favorite/'+fileid;
+        Http.open("GET", url);
+        Http.send();
+        setTimeout('location.reload();', 500);
+      }
+      function noorder() {
+        let querystring = document.getElementById('query').value
+        let order = '{{order}}'
+        let starred = '{{star}}'
+        let url = '?';
+        if (querystring != '') {
+          url = url + 'q='+querystring+'&'
+        }
+        url = url + 'starred='+starred+'&'
+        window.location.replace("/profile"+url+"order=n-o");
+      }
+      function onorder() {
+        let querystring = document.getElementById('query').value
+        let order = '{{order}}'
+        let starred = '{{star}}'
+        let url = '?';
+        if (querystring != '') {
+          url = url + 'q='+querystring+'&'
+        }
+        url = url + 'starred='+starred+'&'
+        window.location.replace("/profile"+url+"order=o-n");
+      }
+      function search() {
+        let querystring = document.getElementById('query').value
+        let order = '{{order}}'
+        let starred = '{{star}}'
+        let url = '?';
+        url = url + 'starred='+starred+'&'
+        url = url + 'order='+order+'&'
+        let query = document.getElementById('query').value
+        if (query != '') {
+          window.location.replace('/profile'+url+'q='+encodeURIComponent(query))
+        } else {
+          window.location.replace('/profile'+url)
+        }
+      }
+      function starred(x) {
+        let querystring = document.getElementById('query').value
+        let order = '{{order}}'
+        let starred = '{{star}}'
+        let url = '?';
+        if (querystring != '') {
+          url = url + 'q='+querystring+'&'
+        }
+        url = url + 'order='+order+'&'
+        if (x==true) {
+          window.location.replace('/profile'+url+'starred=True')
+        } else {
+          window.location.replace('/profile'+url+'starred=False')
+        }
+      }
+      function pagination(x) {
+        let querystring = document.getElementById('query').value
+        let order = '{{order}}'
+        let starred = '{{star}}'
+        let url = '?';
+        if (querystring != '') {
+          url = url + 'q='+querystring+'&'
+        }
+        url = url + 'starred='+starred+'&'
+        url = url + 'order='+order+'&'
+        window.location.replace('/profile'+url+x)
+      }
+      function addtag(tag,id) {
+        const Http = new XMLHttpRequest();
+        let url = '/tag/'+id+'/'+tag+':'
+        Http.open("GET", url);
+        Http.send();
+        setTimeout('location.reload();', 500);
+      }
+      function newtag(id) {
+        const Http = new XMLHttpRequest();
+        tag = prompt('Enter tag(s) seperated by colons')
+        let url = '/tag/'+id+'/'+tag+':'
+        Http.open("GET", url);
+        Http.send();
+        setTimeout('location.reload();', 500);
+      }
+      function removetag(tag,id) {
+        const Http = new XMLHttpRequest();
+        let url = '/untag/'+id+'/'+tag
+        Http.open("GET", url);
+        Http.send();
+        setTimeout('location.reload();', 500);
+      }
+      function querytag(tag) {
+        let order = '{{order}}'
+        let starred = '{{star}}'
+        let url = '?';
+        let querystring = document.getElementById('query').value
+        if (querystring != '') {
+          url = url + 'q='+querystring+'&'
+        }
+        url = url + 'starred='+starred+'&'
+        url = url + 'order='+order+'&'
+        url = url + 'tag='+tag+'&'
+        window.location.replace('/profile'+url)
+      }
+    </script>
+    <script src="https://kit.fontawesome.com/9482d93e82.js" crossorigin="anonymous"></script>
+  </body>
+</html>

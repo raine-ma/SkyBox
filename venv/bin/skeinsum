@@ -1,0 +1,4 @@
+#!/home/runner/SkyBox/venv/bin/python3
+# EASY-INSTALL-SCRIPT: 'pyskein==1.0','skeinsum'
+__requires__ = 'pyskein==1.0'
+__import__('pkg_resources').run_script('pyskein==1.0', 'skeinsum')

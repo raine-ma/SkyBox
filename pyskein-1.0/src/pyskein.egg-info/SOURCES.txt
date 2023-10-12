@@ -1,0 +1,13 @@
+COPYING
+README
+setup.py
+scripts/skeinsum
+src/_skeinmodule.c
+src/skein.py
+src/threefish.c
+src/pyskein.egg-info/PKG-INFO
+src/pyskein.egg-info/SOURCES.txt
+src/pyskein.egg-info/dependency_links.txt
+src/pyskein.egg-info/top_level.txt
+test/test_compare_pure.py
+test/test_skein.py

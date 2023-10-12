@@ -1,0 +1,298 @@
+<!doctype html>
+<html>
+<head>
+<title>
+Upload | Skybox
+</title>
+
+<style>
+  #myProgress {
+    width: 100%;
+    background-color: #ddd;
+  }
+  
+  #myBar {
+    width: 0%;
+    height: 30px;
+    background-color: #04AA6D;
+    text-align: center;
+    line-height: 30px;
+    color: white;
+  }
+</style>
+
+</head>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    <br><br>
+  {% endif %}
+{% endwith %}
+
+<body>
+{% if current_user.is_authenticated %}
+  <h1>Welcome, {{ current_user.username }} | <a href="/profile">Your Profile</a> | <a href="/logout">Logout</a></h1>
+  <hr>
+  <h2>Upload a File</h2>
+{% else: %}
+  <h1>Upload a File</h1>
+{% endif %}
+<form id="upload-form" enctype="multipart/form-data">
+  <b>There are currently {{uploadcount}} files or {{size}} of data being stored on Skybox!</b><br><br>
+  <label> </label>
+  <input type="file" id="file-input" name="file" multiple="multiple"/><br>
+  <br>
+  <div id="selectedFiles"></div><br>
+  <label> </label>
+  <input type="submit" value="Upload" />
+  <br>
+  <p>Pro tip: select multiple files in file explorer to upload files back to back without you having to do anything, saving more time.</p>
+  <br>
+  {% if current_user.is_authenticated == False: %}
+    <p>You are currently not logged in<br><a href="/login">Login</a></p>
+    <p>Not signed up yet? Sign up <a href="/signup">here</a></p>
+    <label>Permission (private and encryption only availible for users who are signed in):</label>
+    <select name=permission id='mySelect'>
+      <option value="PUBLIC">Public</option>
+    </select>
+  {% else: %}
+    <label>Permission:</label>
+    <select name=permission onchange="toggleInput()" id="mySelect">
+      <option value="PUBLIC">Public</option>
+      <option value="PRIVATE">Private</option>
+      <option value="PASS">Encrypted with a password</option>
+    </select>
+    <div id="passencrypt" style="display: none;">
+      <label>Password encryption (optional extra layer of security with Threefish-1024. May take longer to upload):</label>
+      <input name="password" type="password">
+    </div>
+  {% endif%}
+</form>
+<div id='filesectionthing'></div>
+<b id='warnmessage'>Please don't close or reload the tab or the upload will be stopped</b>
+<a href='#' id='uploadmore' style='display: none;' onclick='filechoosereappear()'>Upload more files</a>
+<script defer>
+  var script = document.createElement('script');
+  script.src = 'https://code.jquery.com/jquery-3.6.3.min.js'; // Check https://jquery.com/ for the current version
+  document.getElementsByTagName('head')[0].appendChild(script);
+  function copyToClipboard(i) {
+    /* Get the text field */
+    var copyText = document.getElementById("filelink"+i);
+
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+    /* Copy the text inside the text field to the clipboard */
+    document.execCommand("copy");
+
+    /* Alert the copied text */
+    document.getElementById('copysuccess'+i).style.visibility = "visible";
+  }
+  function toggleInput() {
+    var selectElement = document.getElementById("mySelect");
+    var inputElement = document.getElementById("passencrypt");
+
+    if (selectElement.value === "PASS") {
+      inputElement.style.display = "block";
+    } else {
+      inputElement.style.display = "none";
+    }
+  }
+  function filechoosereappear() {
+    document.getElementById('upload-form').style.display = 'block';
+  }
+  document.addEventListener("DOMContentLoaded", function() {
+    let username = "{{ user }}";
+    let url = '/upload';
+    let id;
+    let count = 0;
+
+    var permission;
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+  
+    document.getElementById("upload-form").addEventListener("submit", async function (event) {
+        event.preventDefault();
+        const fileInput = document.getElementById("file-input");
+        var selectElement = document.getElementById("mySelect");
+        if (selectElement.value == 'PUBLIC') {
+          permission = 0;
+        } else if (selectElement.value == 'PRIVATE') {
+          alert('Not implemented yet')
+          window.location.reload();
+          permission = 1;
+        } else {
+          permission = 2;
+          url = '/encupload'
+        };
+
+        for (let i = count; i < fileInput.files.length + count; i++) {
+          const file = fileInput.files[i-count];
+          if (file) {
+            const para = document.createElement("p");
+            para.innerHTML = '<hr><span id="progress'+i+'">'+file.name+' ('+(i+1-count)+' out of '+(fileInput.files.length)+'): Uploading... <span id="percent'+i+'">0%</span><br><br></span><span id="fileuploadend'+i+'" style="visibility: hidden;"><p>Share this file link: <input value="https://skybox.mea-team.repl.co/file/" id="filelink'+i+'"><button onclick="copyToClipboard('+i+')">Copy File Link</button><span id="copysuccess'+i+'" style="visibility: hidden;">Copied!</span></p><p><a href="#" id="fileopen'+i+'" target="_blank">Open in another tab</a></p><br></span>'
+            document.getElementById('filesectionthing').appendChild(para);
+            document.getElementById('upload-form').style.display = 'none';
+            let reqresponse;
+            let passed;
+            async function startreq() {
+              if (permission == 2) {
+                reqresponse = await fetch("/encstart", {
+                    method: "POST",
+                    headers: {"name": file.name, "uploader": username, "size": file.size, "perm": permission, 'pass': document.getElementById("mySelect").value},
+                    body: file.slice(0,128)
+                });
+              } else {
+                reqresponse = await fetch("/start", {
+                    method: "POST",
+                    headers: {"name": file.name, "uploader": username, "size": file.size, "perm": permission}
+                });
+                id = await reqresponse.text()
+                console.log(id)
+                console.log(reqresponse.status)
+                if (reqresponse.status == 403) {
+                    async function ratelimit() {
+                      console.log('rate exceeded, trying again in 1.5 sec')
+                      await sleep(1500)
+                      await startreq()
+                    }
+                    ratelimit()
+                    passed = false
+                } else if (id == 'internal server error') {
+                  alert('Everyone has been uploading a lot of files, and it seems we have reached the limit temporarily. We limit everyone to uploading 1000 files per hour. Please try again later')
+                  window.location.reload()
+                } else {
+                  passed = true
+                }
+              };
+            };
+            await startreq()
+            y = 0
+            while (passed == false && i < 7) {
+              await sleep(2000)
+              console.log('waiting for rate limit')
+              startreq()
+              y++
+            }
+            if (passed == false && id >= 7 || id == 'rate limit exceeded') {
+              alert('Error, server overloaded. The file currently being uploaded may be corrupted or incomplete.')
+              window.location.href = '/upload'
+            }
+            console.log(id)
+            document.getElementById('filelink'+i).value = 'https://skybox.mea-team.repl.co/file/'+id;
+            document.getElementById('fileopen'+i).setAttribute("href", '/file/'+id);
+            const chunkSize = 10 * 1024 * 1024; // 10MB in bytes
+            let offset = 0;
+            if (permission == 2) {
+              let offset = 128;
+            };
+            let percentage = 0;
+            let last = 0;
+            while (offset < file.size) {
+                const chunk = file.slice(offset, offset + chunkSize);
+                if (offset+chunkSize >= file.size) {
+                  console.log('sending last')
+                  await sendChunkToServer(chunk, true, file.name, file.size);
+                } else {
+                  console.log('sending chunk')
+                  await sendChunkToServer(chunk, false);
+                };
+                if ((Math.round(((offset+chunkSize)/file.size)*10000))/100 >= 100) {
+                  document.getElementById("percent"+i).innerHTML = 'Complete!';
+                } else {
+                  document.getElementById("percent"+i).innerHTML = (Math.round(((offset+chunkSize)/file.size)*10000))/100+'%';
+                };
+                offset += chunkSize;
+            };
+            document.getElementById('fileuploadend'+i).style.visibility = 'visible';
+            const scrollingElement = (document.scrollingElement || document.body);
+            $(scrollingElement).animate({
+              scrollTop: document.body.scrollHeight,
+            }, 500);
+          };
+        };
+        count = fileInput.files.length
+        document.getElementById('warnmessage').style.display = 'none';
+        document.getElementById('uploadmore').style.display = 'block';
+    });
+  
+    async function sendChunkToServer(chunk, last, name, size) {
+        const fileInput = document.getElementById("file-input");
+        const file = fileInput.files[0];
+        let passed;
+        let response;
+        async function req() {
+          response = await fetch(url, {
+              method: "POST",
+              headers: {"fileid": id, 'last': last, "name": name, "uploader": username, "size": size, "perm": permission},
+              body: chunk
+          });
+          let responsetext = await response.text();
+          if (response.status != 200 && response.status != 400) {
+              console.log('error, trying again in 1.5 sec')
+              await sleep(1500)
+              await req()
+              passed = false
+          } else if (responsetext == 'internal server error') {
+            alert('Everyone has been uploading a lot of files, and it seems we have reached the limit temporarily. We limit everyone to uploading 1000 files per hour. Please try again later')
+            window.location.reload()
+          } else if (responsetext != 'success') {
+              console.log(responsetext)
+              console.log('fileid: '+id)
+              alert('Error! Please try again later. The file currently being uploaded may be corrupted or incomplete.')
+              window.location.href = '/upload'
+              passed = false
+          } else {
+            passed = true
+          }
+        }
+        await req()
+        y = 0
+        while (passed == false && y < 7) {
+          await sleep(2000)
+          console.log('waiting for rate limit')
+          req()
+          y++
+        }
+        if (passed == false && y >= 7) {
+          alert('Error, server overloaded. The file currently being uploaded may be corrupted or incomplete.')
+          window.location.href = '/upload'
+        }
+    };
+  });
+  var selDiv = "";
+		
+	document.addEventListener("DOMContentLoaded", init, false);
+	
+	function init() {
+		document.querySelector('#file-input').addEventListener('change', handleFileSelect, false);
+		selDiv = document.querySelector("#selectedFiles");
+	}
+		
+	function handleFileSelect(e) {
+		console.dir(e);
+		
+		if(!e.target.files) return;
+		
+		selDiv.innerHTML = "";
+		
+		var files = e.target.files;
+		for(var i=0; i<files.length; i++) {
+			var f = files[i];
+			
+			selDiv.innerHTML += f.name + "<br/>";
+
+		}
+		
+	}
+</script>
+</body>
+</html>

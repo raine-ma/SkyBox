@@ -1,0 +1,95 @@
+<title>{{l[1]}} | Skybox File</title>
+{% if current_user.is_authenticated %}
+  <h1>Welcome, {{ current_user.username }} | <a href="/profile">Your Profile</a> | <a href="/logout">Logout</a></h1>
+  <hr>
+{% else: %}
+  <h2>You aren't logged in | <a href="/login">Log in</a> | <a href="/signup">Sign up - Its free</a> | <a href="/upload">Upload a file</a></h2>
+  <hr>
+{% endif %}
+<h2>{{l[1]}}</h2>
+<br>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    <br><br>
+  {% endif %}
+{% endwith %}
+<p>Uploaded by: {{l[2]}}</p>
+<br>
+<p>File size: {{fsize}}</p>
+<br>
+<p>Date uploaded: {{l[4]}} GMT</p>
+<br>
+{% if l[0] == 0: %}
+<p>Permission: PUBLIC
+{% elif l[0] == 1: %}
+<p>Permission: PRIVATE
+{% else: %}
+<p>Permission: ENCRYPTED
+{% endif %}
+{% if current_user.is_authenticated and current_user.username == l[2] and l[0] != 2: %} 
+  <a href="/change-perm/{{id}}?next=file&id={{id}}">[change]</a>
+{% endif %}
+</p>
+<br>
+<p><a href='/download/{{id}}' target="_blank">Download</a></p>
+<br>
+{% if preview: %}
+  <iframe src="/preview/{{id}}" style="border:none;" title="file preview" height="260px" width="340px"></iframe>
+  <p><a href="/preview/{{id}}"  target="_blank">Open in another page</a></p>
+  <br>
+{% endif %}
+{% if current_user.is_authenticated and current_user.username == l[2]: %}
+  <p><a href="/delete/{{id}}">Delete file</a></p>
+  <br>
+{% endif %}
+{% if l[0] == 0 %}
+  <p>Share this file link: <input value="https://skybox.mea-team.repl.co/file/{{id}}" id="filelink"><button onclick="copyToClipboard()">Copy File Link</button><span id="copysuccess" style="visibility: hidden;">Copied!</span></p><button id="shareButton">Share</button>
+  <script>
+    function copyToClipboard() {
+      /* Get the text field */
+      var copyText = document.getElementById("filelink");
+
+      /* Select the text field */
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+      /* Copy the text inside the text field to the clipboard */
+      document.execCommand("copy");
+
+      /* Alert the copied text */
+      document.getElementById('copysuccess').style.visibility = "visible";
+    }
+
+    
+    // Check if the Web Share API is available
+    if (navigator.share) {
+        const shareButton = document.getElementById('shareButton');
+    
+        // Add a click event listener to the share button
+        shareButton.addEventListener('click', async () => {
+            try {
+                // Use the Web Share API to open the native sharing dialog
+                await navigator.share({
+                    title: 'Share File',
+                    text: 'Check out this file',
+                    url: window.location.href, // The URL of the file page
+                });
+            } catch (error) {
+                // Handle errors, if any
+                console.error('Error sharing:', error);
+            }
+        });
+    } else {
+        // Web Share API is not supported, you can provide a fallback
+        console.warn('Web Share API is not supported in this browser.');
+        const shareButton = document.getElementById('shareButton');
+        shareButton.style.visibility = 'hidden'
+        // Provide a fallback sharing method or message
+    }
+  </script>
+{% endif %}

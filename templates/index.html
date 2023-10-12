@@ -1,0 +1,23 @@
+<head>
+{{ dropzone.load_css() }}
+<style>
+    .dropzone {
+        border: 2px dashed #0087F7;
+        margin: 10%;
+        min-height: 400px;
+    }
+</style>
+</head>
+<body>
+{{ dropzone.load_js() }}
+
+{{ dropzone.create(action='/upload') }}
+{{ dropzone.config() }}
+{{ dropzone.config(custom_options='chunking: true,
+            forceChunking: true,
+            url: "/upload",
+            maxFilesize: 9999999,
+            chunkSize: 25000000, // bytes
+            maxFiles: 1') }}
+{{ dropzone.config(redirect_url=url_for('uploadcomplete')) }}
+</body>

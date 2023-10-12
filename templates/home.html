@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Skybox</title>
+  <link href="{{ url_for('static', filename='home.css') }}" rel="stylesheet" type="text/css" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+  <link href='/static/logo-120x120.png' rel=’apple-touch-icon’ sizes='120×120'/>
+  <link href='/static/logo-152x152.png' rel='apple-touch-icon' sizes='152×152'/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
+  <link rel="manifest" href="/static/site.webmanifest">
+</head>
+
+<body>
+<nav>
+            <div class="logo">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="logoface" class="logoface">
+                <a href="#" style="color: #56889f"><h2 class="sitename">| SkyBox</h2></a>
+            </div>
+
+            <div class="menu">
+                <a href="/upload" class="menu-item" style="font-weight: bold">Upload a file</a>
+                <a href="/login" class="menu-item">Login</a>
+                <a href="/signup" class="menu-item">Sign-up</a>
+                <a href="#sub" class="primary-button">Subscribe</a>
+            </div>
+        </nav>
+        <div class="hero">
+            <div class="hero-text">
+                <h1>Upload Your <span class="color-effect">Files</span><br>With No Size Limit - For <span class="color-effect">Free</span></h1>
+                <p class="subtitle">Just need to share a file quickly?<br>Not enough storage for your important files?<br>Use Skybox to store your files.</p>
+                <div class="hero-cta">
+                    <a href="/upload" class="primary-button">Start Uploading</a>
+                    <a href="#how" class="secondary-button">How does it work?</a>
+                    <a href="/login" class="secondary-button">Log in</a>
+                    <a href="/signup" class="secondary-button">Sign up</a>
+                </div>
+            </div>
+            <div class="hero-img">
+                <svg xmlns="http://www.w3.org/2000/svg" width="652" height="644" viewBox="0 0 652 644" fill="none" class="mondrian">
+                    <rect opacity="0.05" x="1" width="163" height="60" rx="10" fill="var(--primary)"/>
+                    <rect x="424" width="193" height="60" rx="10" fill="var(--secbuttn)"/>
+                    <rect x="424" y="68" width="193" height="175" rx="10" fill="var(--secbuttn)"/>
+                    <rect opacity="0.2" x="424" y="401" width="193" height="79" rx="10" fill="var(--primbuttn)"/>
+                    <rect x="255" y="626" width="362" height="18" rx="9" fill="var(--secondary)"/>
+                    <rect x="80" y="579" width="166" height="65" rx="10" fill="var(--secondary)"/>
+                    <rect x="255" y="579" width="160" height="40" rx="10" fill="var(--primary)"/>
+                    <rect opacity="0.05" x="255" y="490" width="160" height="80" rx="10" fill="var(--primary)"/>
+                    <rect opacity="0.05" x="255" y="400" width="160" height="80" rx="10" fill="var(--primary)"/>
+                    <rect x="80" y="68" width="335" height="324" rx="10" fill="var(--primbuttn)"/>
+                    <rect x="80" y="401" width="166" height="169" rx="10" fill="var(--primary)"/>
+                    <rect x="424" y="490" width="193" height="129" rx="10" fill="var(--accent)"/>
+                    <rect x="626" y="490" width="26" height="154" rx="10" fill="var(--primbuttn)"/>
+                    <rect x="424" y="252" width="91" height="140" rx="10" fill="var(--secondary)"/>
+                    <rect x="524" y="252" width="93" height="140" rx="10" fill="var(--secondary)"/>
+                    <rect opacity="0.05" x="626" width="26" height="480" rx="10" fill="var(--primary)"/>
+                    <rect x="173" width="242" height="60" rx="10" fill="var(--secondary)"/>
+                    <rect x="1" y="68" width="70" height="157" rx="10" fill="var(--secondary)"/>
+                    <rect opacity="0.05" x="1" y="234" width="70" height="259" rx="10" fill="var(--primary)"/>
+                    <rect x="1" y="502" width="70" height="142" rx="10" fill="var(--secbuttn)"/>
+                </svg>
+            </div>
+        </div>
+        <main>
+            <div class="part1" id="why">
+                <h2>Why Skybox?</h2>
+                <div class="part1-cards">
+                    <div class="part1-card">
+                        <svg width="117" height="117" viewBox="0 0 117 117" fill="none" style="z-index: 5;" class="part1-card-img">
+                            <circle cx="58.5" cy="58.5" r="58.5" fill="var(--secondary)"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M89.4669 8.85912L58.0465 63.9419L2.44746 41.7023C9.66585 17.5806 32.0298 0 58.5 0C69.872 0 80.4861 3.24483 89.4669 8.85912Z" fill="var(--primbuttn)" fill-opacity="0.6"/>
+                            <path d="M81.5 22.5L57.1395 64.8489L32 53.5" stroke="var(--primary)" stroke-width="7.25581"/>
+                        </svg>
+                        <p class="subtitle highlight">Ease of use</p>
+                        <p>Explaination</p>
+                        <div class="part1-card-bg"></div>
+                    </div>
+                    <div class="part1-card">
+                        <svg width="112" height="114" viewBox="0 0 112 114" fill="none" style="z-index: 5;" class="part1-card-img">
+                            <rect width="58" height="58" fill="var(--secondary)"/>
+                            <rect x="69" y="25" width="33" height="33" fill="var(--primbuttn)" fill-opacity="0.6"/>
+                            <rect x="69" y="71" width="43" height="43" fill="var(--primary)" fill-opacity="0.2"/>
+                            <rect x="20" y="70" width="38" height="39" fill="var(--primary)"/>
+                        </svg>
+                        <p class="subtitle highlight">No limits</p>
+                        <p>With other cloud storage services, there is always a pesky limit to the size of files you can upload or store, and files don't stay forever. However, with Skybox, you can upload files of any size with the guarantee that they won't disappear when you most need it.</p>
+                        <div class="part1-card-bg"></div>
+                    </div>
+                    <div class="part1-card">
+                        <svg width="179" height="89" viewBox="0 0 179 89" fill="none" style="z-index: 5;" class="part1-card-img">
+                            <rect y="26" width="154" height="63" fill="var(--primbuttn)" fill-opacity="0.6"/>
+                            <path d="M142 15.5V0" stroke="var(--primary)" stroke-width="8"/>
+                            <path d="M163 34L178.5 34" stroke="var(--primary)" stroke-width="8"/>
+                            <path d="M158 19.5L170.5 7" stroke="var(--primary)" stroke-width="8"/>
+                            <path d="M63 54L74.5 65L95.5 44" stroke="var(--primary)" stroke-width="8"/>
+                        </svg>
+                        <p class="subtitle highlight">Reason 3</p>
+                        <p>Explanation</p>
+                        <div class="part1-card-bg"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="part2" id="how" style="color: var(--primary); background-color: var(--secbuttn);">
+                <div class="part2-left">
+                    <h2>How Does it Work?</h2>
+                    <p>You can upload and share your file in 4 simple steps.</p>
+                </div>
+                <div class="part2-right">
+                    <p class="one step">Get to the file upload page or click <a href="/upload" style="text-decoration: underline">here.</a></p>
+                    <p class="two step">Click "Choose File" and select the file you want to upload</p>
+                    <p class="three step">Select the permission for the file, if you are logged in.</p>
+                    <p class="four step">Click upload and wait for the file to upload to our servers. Large files may take a while. Then, you can share the link.</p>
+                </div>
+            </div>
+    
+            <div class="part3" id="sub">
+                <div class="part3-heading">
+                    <h2>Plans & Pricing</h2>
+                    <p>Get more features to elevate your file storing. </p>
+                </div>
+                <div class="part3-cards">
+                    <div class="part3-card">
+                        <div class="part3-card-text">
+                            <div class="promo" style="visibility: hidden;">
+                                <p class="sub promo-text">None</p>
+                            </div>
+                            <h2>No account</h2>
+                            <p>Free</p>
+                            <div class="part3-list">
+                                <div class="list">
+                                    <svg width="29" height="22" viewBox="0 0 29 22" fill="none" class="check-icon">
+                                        <path d="M3 9.72308L11.1385 17.8615L26 3" stroke="var(--primary)" stroke-width="5.66154"/>
+                                    </svg>
+                                    <p class="list-item">Upload infinate files</p>
+                                </div>
+                                <div class="list">
+                                    <svg width="29" height="22" viewBox="0 0 29 22" fill="none" class="check-icon">
+                                        <path d="M3 9.72308L11.1385 17.8615L26 3" stroke="var(--primary)" stroke-width="5.66154"/>
+                                    </svg>
+                                    <p class="list-item">Share your files with no restrictions</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/upload" class="secondary-button">Get Started</a>
+                        <div class="part3-bg"></div>
+                    </div>
+                    <div class="part3-card">
+                        <div class="part3-card-text">
+                            <div class="promo">
+                                <svg width="27" height="28" viewBox="0 0 27 28" fill="none">
+                                    <path d="M13.5412 0.494507L14.6922 8.99311L19.4165 1.83551L16.7661 9.99186L24.1282 5.59291L18.2013 11.7915L26.7429 11.0225L18.7135 14.0357L26.7429 17.0489L18.2013 16.2799L24.1282 22.4785L16.7661 18.0796L19.4165 26.2359L14.6922 19.0783L13.5412 27.5769L12.3903 19.0783L7.6659 26.2359L10.3163 18.0796L2.95427 22.4785L8.88114 16.2799L0.339506 17.0489L8.36893 14.0357L0.339506 11.0225L8.88114 11.7915L2.95427 5.59291L10.3163 9.99186L7.6659 1.83551L12.3903 8.99311L13.5412 0.494507Z" fill="var(--primbuttn)"/>
+                                </svg>
+                                <p class="sub promo-text">Most Popular</p>
+                            </div>
+                            <h2>Free account</h2>
+                            <p>Free</p>
+                            <div class="part3-list">
+                                <div class="list">
+                                    <svg width="29" height="22" viewBox="0 0 29 22" fill="none" class="check-icon">
+                                        <path d="M3 9.72308L11.1385 17.8615L26 3" stroke="var(--primary)" stroke-width="5.66154"/>
+                                    </svg>
+                                    <p class="list-item">Upload infinite files</p>
+                                </div>
+                                <div class="list">
+                                    <svg width="29" height="22" viewBox="0 0 29 22" fill="none" class="check-icon">
+                                        <path d="M3 9.72308L11.1385 17.8615L26 3" stroke="var(--primary)" stroke-width="5.66154"/>
+                                    </svg>
+                                    <p class="list-item">Share your files with no restrictions</p>
+                                </div>
+                                <div class="list">
+                                    <svg width="29" height="22" viewBox="0 0 29 22" fill="none" class="check-icon">
+                                        <path d="M3 9.72308L11.1385 17.8615L26 3" stroke="var(--primary)" stroke-width="5.66154"/>
+                                    </svg>
+                                    <p class="list-item">Make files private</p>
+                                </div>
+                                <div class="list">
+                                    <svg width="29" height="22" viewBox="0 0 29 22" fill="none" class="check-icon">
+                                        <path d="M3 9.72308L11.1385 17.8615L26 3" stroke="var(--primary)" stroke-width="5.66154"/>
+                                    </svg>
+                                    <p class="list-item">Encrypt your files to keep them secure</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/signup" class="primary-button">Sign up</a>
+                        <div class="part3-bg best"></div>
+                    </div>
+                    <div class="part3-card">
+                        <div class="part3-card-text">
+                            <div class="promo" style="visibility: hidden;">
+                                <p class="sub promo-text">None</p>
+                            </div>
+                            <h2>Pro</h2>
+                            <p>$5.99 / month</p>
+                            <div class="part3-list">
+                                <div class="list">
+                                    <svg width="29" height="22" viewBox="0 0 29 22" fill="none" class="check-icon">
+                                        <path d="M3 9.72308L11.1385 17.8615L26 3" stroke="var(--primary)" stroke-width="5.66154"/>
+                                    </svg>
+                                    <p class="list-item">Blah blah</p>
+                                </div>
+                                <div class="list">
+                                    <svg width="29" height="22" viewBox="0 0 29 22" fill="none" class="check-icon">
+                                        <path d="M3 9.72308L11.1385 17.8615L26 3" stroke="var(--primary)" stroke-width="5.66154"/>
+                                    </svg>
+                                    <p class="list-item">Blah blah</p>
+                                </div>
+                                <div class="list">
+                                    <svg width="29" height="22" viewBox="0 0 29 22" fill="none" class="check-icon">
+                                        <path d="M3 9.72308L11.1385 17.8615L26 3" stroke="var(--primary)" stroke-width="5.66154"/>
+                                    </svg>
+                                    <p class="list-item">Blah blah</p>
+                                </div>
+                                <div class="list">
+                                    <svg width="29" height="22" viewBox="0 0 29 22" fill="none" class="check-icon">
+                                        <path d="M3 9.72308L11.1385 17.8615L26 3" stroke="var(--primary)" stroke-width="5.66154"/>
+                                    </svg>
+                                    <p class="list-item">Blah blah</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="mailto:contactemail@something.com" class="secondary-button">Contact</a>
+                        <div class="part3-bg"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="part4" id="faq">
+                <div class="part4-heading">
+                    <h2>FAQ</h2>
+                    <p>Answers to some questions you might have.</p>
+                </div>
+                <div class="faq-list">
+                    <div class="faq">
+                        <div class="faq-q">
+                            <h3>What is the maximum file size that I can upload?</h3>
+                            <svg width="23" height="23" viewBox="0 0 23 23" fill="none" class="faq-icon">
+                                <path d="M11.5 0L11.5 23" stroke="var(--accent)" stroke-width="6"/>
+                                <path d="M23 11.5L-2.38419e-07 11.5" stroke="var(--accent)" stroke-width="6"/>
+                            </svg>
+                        </div>
+                        <div class="faq-a">
+                            <p>You can upload files of any size with Skybox! There are no restrictions meaning you can store as much information as you want on Skybox.</p>
+                        </div>
+                    </div> 
+                    <div class="faq">
+                        <div class="faq-q">
+                            <h3>Question</h3>
+                            <svg width="23" height="23" viewBox="0 0 23 23" fill="none" class="faq-icon">
+                                <path d="M11.5 0L11.5 23" stroke="var(--accent)" stroke-width="6"/>
+                                <path d="M23 11.5L-2.38419e-07 11.5" stroke="var(--accent)" stroke-width="6"/>
+                            </svg>
+                        </div>
+                        <div class="faq-a">
+                            <p>Answer</p>
+                        </div>
+                    </div> 
+                    <div class="faq">
+                        <div class="faq-q">
+                            <h3>Question</h3>
+                            <svg width="23" height="23" viewBox="0 0 23 23" fill="none" class="faq-icon">
+                                <path d="M11.5 0L11.5 23" stroke="var(--accent)" stroke-width="6"/>
+                                <path d="M23 11.5L-2.38419e-07 11.5" stroke="var(--accent)" stroke-width="6"/>
+                            </svg>
+                        </div>
+                        <div class="faq-a">
+                            <p>Answer</p>
+                        </div>
+                    </div> 
+                    <div class="faq">
+                        <div class="faq-q">
+                          <h3>Question</h3>
+                            <svg width="23" height="23" viewBox="0 0 23 23" fill="none" class="faq-icon">
+                                <path d="M11.5 0L11.5 23" stroke="var(--accent)" stroke-width="6"/>
+                                <path d="M23 11.5L-2.38419e-07 11.5" stroke="var(--accent)" stroke-width="6"/>
+                            </svg>
+                        </div>
+                        <div class="faq-a">
+                            <p>Answer</p>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+            <div class="footer" id="footer">
+                <div class="logo">
+                    <img src="{{ url_for('static', filename='logo-inverted.png') }}" alt="logoface" class="logoface">
+                    <a href="#"><h2 class="sitename reversed">| Skybox</h2></a>
+                </div>
+                <div class="footer-cols">
+                    <div class="footer-col">
+                        <p style="margin: 0;">Upload your files</p>
+                    </div>
+                    <div class="footer-col">
+                        <a href="#" class="menu-item reversed">About</a>
+                        <!-- <a href="#" class="menu-item reversed">Blog</a> -->
+                        <a href="#" class="menu-item reversed">Contact</a>
+                    </div>
+                    <div class="footer-col">
+                        <a href="#" class="menu-item reversed" target="_blank">Stuff</a>
+                        <a href="#" target="_blank" class="menu-item reversed">Stuff</a>
+                        <a href="#" target="_blank" class="menu-item reversed">Stuff</a>
+                        <a href="#" target="_blank" class="menu-item reversed">Stuff</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+  <script>
+    const faqQuestions = document.querySelectorAll(".faq");
+    const faqAnswers = document.querySelectorAll(".faq-a");
+    const faqIcons = document.querySelectorAll(".faq-icon");
+    
+    faqQuestions.forEach((faqQuestion, index) => {
+      faqQuestion.addEventListener('click', () => {
+        faqIcons[index].classList.toggle("expand");
+        faqAnswers[index].classList.toggle("expand");
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<title>
+Upload | Skybox
+</title>
+
+</head>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    <br><br>
+  {% endif %}
+{% endwith %}
+
+<body>
+{% if current_user.is_authenticated %}
+  <h1>Welcome, {{ current_user.username }} | <a href="/profile">Your Profile</a> | <a href="/logout">Logout</a></h1>
+  <hr>
+  <h2>Upload a File</h2>
+{% else: %}
+  <h1>Upload a File</h1>
+{% endif %}
+<form method=post enctype=multipart/form-data>
+  <input type=file name=file>
+  <input type=submit value=Upload>
+  <br><br>
+  {% if current_user.is_authenticated == False: %}
+    <p>You are currently not logged in<br><a href="/login">Login</a></p>
+    <p>Not signed up yet? Sign up <a href="/signup">here</a></p>
+    <label>Permission (private only availible for users who are signed in):</label>
+    <select name=permission>
+      <option value="PUBLIC">Public</option>
+    </select>
+  {% else: %}
+    <label>Permission:</label>
+    <select name=permission>
+      <option value="PUBLIC">Public</option>
+      <option value="PRIVATE">Private</option>
+    </select>
+    <label>Ecryption: </label>
+    <select name='encryption' onchange="toggleInput()" id="mySelect">
+      <option value="">False</option>
+      <option value="PASS">True</option>
+    </select>
+    <div id="passencrypt" style="display: none;">
+      <label>Password encrytion (optional extra layer of security. We never store this password):</label>
+      <input name="password" type="password">
+    </div>
+  {% endif%}
+</form>
+<script>
+  function toggleInput() {
+    var selectElement = document.getElementById("mySelect");
+    var inputElement = document.getElementById("passencrypt");
+
+    if (selectElement.value === "PASS") {
+      inputElement.style.display = "block";
+    } else {
+      inputElement.style.display = "none";
+    }
+  }
+</script>
+</body>
+</html>
